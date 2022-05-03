@@ -1,0 +1,16 @@
+{
+  "name": "xpeds-sync-client",
+  "version": "1.0.0",
+  "main": "dist/main.js",
+  "types": "dist/main.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "dev": "node --es-module-specifier-resolution=node build.js -w",
+    "build": "node --es-module-specifier-resolution=node build.js",
+    "types": "dts-bundle-generator -o dist/main.d.ts --inline-declare-externals src/main.ts"
+  },
+  "type": "module"
+}
