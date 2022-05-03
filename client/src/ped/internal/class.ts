@@ -10,16 +10,10 @@ const log = new Logger("internal-ped")
 export class InternalPed {
   public static onStreamIn(ped: XSyncPed): void {
     log.log("onStreamIn", "ped id:", ped.id)
-
-    new GamePed({
-      model: ped.syncedMeta.model,
-      pos: ped.pos,
-      health: ped.syncedMeta.health,
-    })
+    new InternalPed(ped)
   }
 
   public static onStreamOut(ped: XSyncPed): void {
-
   }
 
   public static onSyncedMetaChange(ped: XSyncPed, meta: Partial<IXSyncPedSyncedMeta>): void {
@@ -32,11 +26,25 @@ export class InternalPed {
 
   private readonly publicInstance: Ped
 
-  constructor(id: number, pos: alt.IVector3, syncedMeta: IXSyncPedSyncedMeta) {
+  constructor(ped: XSyncPed) {
+    const {
+      id,
+      pos,
+      syncedMeta,
+    } = ped
+
     this.publicInstance = new Ped(
       id,
       new alt.Vector3(pos),
       this,
     )
+
+    new GamePed(
+      ped,
+      {
+        pos,
+        model: syncedMeta.model,
+        health: syncedMeta.health,
+      })
   }
 }
