@@ -104,6 +104,7 @@ module.exports = {
     }],
     'curly': ['error', 'multi-or-nest'],
     'import/no-webpack-loader-syntax': 0,
+    'brace-style': ['error', 'stroustrup']
   },
   ignorePatterns: [
     '.eslintrc.cjs',
