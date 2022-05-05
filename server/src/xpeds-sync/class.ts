@@ -2,7 +2,6 @@ import * as alt from "alt-server"
 import * as xsync from "altv-xsync-entity-server"
 import type { IAltClientEvent } from "xpeds-sync-shared"
 import { AltClientEvents, Logger } from "xpeds-sync-shared"
-import { Ped } from "../ped"
 import { InitXSyncPed } from "../xsync-ped"
 import type { XSyncPedClass } from "../xsync-ped"
 
@@ -20,10 +19,13 @@ export class XPedsSync {
 
   public readonly XSyncPed: XSyncPedClass
 
+  // TODO: implement handling of user xsync
   constructor(_xsync = xsync) {
-    // TODO: implement handling of user xsync
+    if (XPedsSync._instance) throw new Error("xpeds sync already initialized")
+    XPedsSync._instance = this
+
     new _xsync.XSyncEntity(
-      300,
+      100,
       {
         localhost: true,
       },
@@ -34,7 +36,7 @@ export class XPedsSync {
 
     this.XSyncPed = InitXSyncPed(_xsync)
 
-    alt.on("playerConnect", this.onPlayerConnect)
+    alt.on("playerConnect", this.onPlayerConnect.bind(this))
   }
 
   private emitAltClient <K extends AltClientEvents>(player: alt.Player, eventName: K, ...args: IAltClientEvent[K]): void {
@@ -46,7 +48,7 @@ export class XPedsSync {
     netOwner: alt.Player | null,
     oldNetOwner: alt.Player | null,
   ): void {
-    if (!(entity instanceof Ped)) return
+    if (!(entity instanceof this.XSyncPed)) return
 
     this.log.log("onEntityNetOwnerChange", entity.id, oldNetOwner?.name, "->", netOwner?.name)
   }

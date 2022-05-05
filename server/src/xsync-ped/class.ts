@@ -22,10 +22,11 @@ export const InitXSyncPed = ({
 
       log.log("created ped pool id:", pedPool.id)
       break
-    } catch {}
+    }
+    catch {}
   }
 
-  return class XSyncPed extends Entity {
+  return class XSyncPed extends Entity<IXSyncPedSyncedMeta> {
     public static pool = pedPool
 
     constructor(pos: alt.IVector3, syncedMeta: IXSyncPedSyncedMeta) {
@@ -36,8 +37,8 @@ export const InitXSyncPed = ({
         {},
         // TODO: add user options for these
         0,
-        50,
-        50,
+        20,
+        10,
       )
     }
   }

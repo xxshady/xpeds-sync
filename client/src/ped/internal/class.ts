@@ -1,50 +1,162 @@
 import * as alt from "alt-client"
 import type { IXSyncPedSyncedMeta } from "xpeds-sync-shared"
 import { Logger } from "xpeds-sync-shared"
-import type { XSyncPed } from "../../xsync-ped"
+import { XSyncPed } from "../../xsync-ped"
 import { Ped } from "../class"
 import { GamePed } from "../game"
+import { NetOwnerPed } from "../net-owner/class"
+import { ObserverPed } from "../observer"
 
 const log = new Logger("internal-ped")
 
 export class InternalPed {
-  public static onStreamIn(ped: XSyncPed): void {
-    log.log("onStreamIn", "ped id:", ped.id)
-    new InternalPed(ped)
+  public static readonly streamedIn = new Set<InternalPed>()
+
+  private static readonly pedsByXsync = new Map<XSyncPed, InternalPed>()
+
+  public static onStreamIn(xsyncPed: XSyncPed): void {
+    log.log("onStreamIn", "ped id:", xsyncPed.id)
+
+    InternalPed.pedsByXsync.set(xsyncPed, new InternalPed(xsyncPed))
   }
 
-  public static onStreamOut(ped: XSyncPed): void {
+  public static onStreamOut(xsyncPed: XSyncPed): void {
+    log.log("onStreamOut", "ped id:", xsyncPed.id)
+
+    const ped = InternalPed.pedsByXsync.get(xsyncPed)
+    if (!ped) return
+
+    ped.destroy()
+    InternalPed.pedsByXsync.delete(xsyncPed)
   }
 
-  public static onSyncedMetaChange(ped: XSyncPed, meta: Partial<IXSyncPedSyncedMeta>): void {
+  public static onSyncedMetaChange(xsyncPed: XSyncPed, meta: Partial<IXSyncPedSyncedMeta>): void {
+    log.log("onSyncedMetaChange", "ped id:", xsyncPed.id, meta)
 
+    const ped = InternalPed.pedsByXsync.get(xsyncPed)
+    if (!ped) return
+
+    if (!ped.netOwnerPed) return
+
+    const {
+      health,
+    } = meta
+
+    if (health != null) {
+      alt.nextTick(() => {
+        ped.gamePed.health = health
+      })
+    }
   }
 
-  public static onPosChange(ped: XSyncPed, pos: alt.IVector3): void {
+  public static onPosChange(xsyncPed: XSyncPed, pos: alt.IVector3): void {
+    // log.log("onPosChange", "ped id:", xsyncPed.id, pos.x, pos.y)
 
+    const ped = InternalPed.pedsByXsync.get(xsyncPed)
+    if (!ped) return
+
+    if (!ped.netOwnerPed) return
+    ped.gamePed.pos = pos
   }
 
-  private readonly publicInstance: Ped
+  public static onNetOwnerChange(xsyncPed: XSyncPed, netOwnered: boolean): void {
+    log.log("onNetOwnerChange", xsyncPed.id, netOwnered)
 
-  constructor(ped: XSyncPed) {
+    const ped = InternalPed.pedsByXsync.get(xsyncPed)
+    if (!ped) return
+
+    netOwnered ? ped.initNetOwner() : ped.removeNetOwner(true)
+  }
+
+  public readonly publicInstance: Ped
+  public readonly gamePed: GamePed
+
+  private valid = true
+  private netOwnerPed: NetOwnerPed | null = null
+  private observerPed: ObserverPed | null = null
+
+  constructor(public readonly xsyncPed: XSyncPed) {
     const {
       id,
       pos,
       syncedMeta,
-    } = ped
+    } = xsyncPed
 
     this.publicInstance = new Ped(
       id,
-      new alt.Vector3(pos),
       this,
     )
 
-    new GamePed(
-      ped,
+    this.gamePed = new GamePed(
+      xsyncPed,
       {
         pos,
         model: syncedMeta.model,
         health: syncedMeta.health,
       })
+
+    this.gamePed.waitForSpawn()
+      .then(() => {
+        if (!xsyncPed.netOwnered)
+          this.observerPed = new ObserverPed(this)
+      })
+      .catch(e => log.error("gamePed.waitForSpawn", e.stack))
+
+    InternalPed.streamedIn.add(this)
+  }
+
+  public sendNetOwnerPosUpdate(pos: alt.IVector3): void {
+    XSyncPed.pool.updateNetOwnerPos(this.xsyncPed, pos)
+  }
+
+  public sendNetOwnerSyncedMetaUpdate(meta: Partial<IXSyncPedSyncedMeta>): void {
+    XSyncPed.pool.updateNetOwnerSyncedMeta(this.xsyncPed, meta)
+  }
+
+  private destroy(): void {
+    if (!this.valid) return
+    this.valid = false
+
+    this.gamePed.destroy()
+    this.observerPed?.destroy()
+    this.removeNetOwner(false)
+
+    InternalPed.streamedIn.delete(this)
+  }
+
+  private initNetOwner(): void {
+    if (this.netOwnerPed)
+      throw new Error("initNetOwner netOwner already created")
+
+    this.gamePed.waitForSpawn()
+      .then(() => {
+        if (!this.xsyncPed.netOwnered) return
+
+        this.netOwnerPed = new NetOwnerPed(this)
+
+        if (this.observerPed) {
+          this.observerPed.destroy()
+          this.observerPed = null
+        }
+      })
+      .catch(e => log.error("gamePed.waitForSpawn", e.stack))
+  }
+
+  private removeNetOwner(createObserver: boolean): void {
+    this.gamePed.waitForSpawn()
+      .then(() => {
+        if (!this.netOwnerPed) return
+        if (this.xsyncPed.netOwnered) return
+
+        this.netOwnerPed.destroy()
+        this.netOwnerPed = null
+
+        if (!createObserver) return
+        if (this.observerPed)
+          throw new Error("xpeds sync removeNetOwner observerPed already created")
+
+        this.observerPed = new ObserverPed(this)
+      })
+      .catch(e => log.error("gamePed.waitForSpawn", e.stack))
   }
 }

@@ -4,5 +4,5 @@ import type { IXSyncPedSyncedMeta } from "xpeds-sync-shared"
 
 export type XSyncPedClass = {
   pool: xsync.EntityPool
-  new (pos: alt.IVector3, syncedMeta: IXSyncPedSyncedMeta): xsync.Entity
+  new (pos: alt.IVector3, syncedMeta: IXSyncPedSyncedMeta): xsync.Entity<IXSyncPedSyncedMeta>
 }

@@ -5,3 +5,9 @@ export interface IGamePedOptions {
   model: number
   health: number
 }
+
+export interface ISpawnListener {
+  promise: Promise<void>
+  resolve: () => void
+  reject: () => void
+}

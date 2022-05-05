@@ -1,11 +1,25 @@
-import type * as alt from "alt-client"
-import type { InternalPed } from "./internal"
+import * as alt from "alt-client"
+import { InternalPed } from "./internal"
 
 export class Ped {
+  public static get streamedIn(): Ped[] {
+    return [...InternalPed.streamedIn].map(p => p.publicInstance)
+  }
+
   constructor(
     public readonly id: number,
-    // TODO: use pos from game ped
-    public readonly pos: alt.Vector3,
     private readonly internalInstance: InternalPed,
   ) {}
+
+  public get scriptID(): number {
+    return this.internalInstance.gamePed.scriptID
+  }
+
+  public get pos(): alt.Vector3 {
+    return new alt.Vector3(this.internalInstance.gamePed.pos)
+  }
+
+  public netOwnered(): boolean {
+    return this.internalInstance.xsyncPed.netOwnered
+  }
 }

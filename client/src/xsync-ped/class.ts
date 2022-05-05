@@ -7,9 +7,19 @@ import { InternalPed } from "../ped/internal"
   streamOut: (entity) => InternalPed.onStreamOut(entity),
   posChange: (entity, pos) => InternalPed.onPosChange(entity, pos),
   syncedMetaChange: (entity, meta) => InternalPed.onSyncedMetaChange(entity, meta),
+  netOwnerChange: (entity, netOwnered) => InternalPed.onNetOwnerChange(entity, netOwnered),
 })
 export class XSyncPed extends xsync.Entity<IXSyncPedSyncedMeta> {
+  private static _pool: xsync.EntityPool<XSyncPed> | null = null
+
+  public static get pool(): xsync.EntityPool<XSyncPed> {
+    if (!XSyncPed._pool)
+      throw new Error("xsyncped pool is not initialized")
+
+    return XSyncPed._pool
+  }
+
   public static initPool(id: number): void {
-    new xsync.EntityPool(id, XSyncPed)
+    XSyncPed._pool = new xsync.EntityPool(id, XSyncPed)
   }
 }
