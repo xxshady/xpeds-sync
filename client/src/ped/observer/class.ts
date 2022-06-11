@@ -40,12 +40,12 @@ export class ObserverPed implements IPedController {
       return
     }
 
-    if (!syncedMeta.health) return
     if (!syncedMeta.ragdoll) return
+    if (!syncedMeta.health) return
 
     // TODO: fix wooden ragdoll
 
-    const multiplier = syncedMeta.isWalking ? 2.5 : 4.0
+    const multiplier = syncedMeta.isWalking ? 3.0 : 4.0
     gamePed.setVelocity({
       x: (this.internalPed.xsyncPed.pos.x - gamePed.pos.x) * multiplier,
       y: (this.internalPed.xsyncPed.pos.y - gamePed.pos.y) * multiplier,
@@ -91,15 +91,18 @@ export class ObserverPed implements IPedController {
       )
     }
 
+    // TODO: inspect bug with walking (ped idle but iswalking on server set as true)
     if (isWalking) {
       this.internalPed.gamePed.gotoCoord(
         pos,
-        gamePed.pos.distanceTo(pos),
+        gamePed.pos.distanceTo(pos) * 1.5,
         heading,
       )
     }
 
     if (!gamePed.health && health > 0) gamePed.resurrect(health)
     gamePed.health = health
+
+    // gamePed.heading = heading
   }
 }

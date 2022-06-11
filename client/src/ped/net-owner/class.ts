@@ -17,15 +17,26 @@ export class NetOwnerPed implements IPedController {
     NetOwnerPed.META_INTERVAL_MS,
   )
 
-  private prevHealth = 0
-  private prevHeading = 0
-  private prevRagdoll = false
-  private prevIsWalking = false
+  private prevHealth: number
+  private prevHeading: number
+  private prevRagdoll: boolean
+  private prevIsWalking: boolean
+  private prevPos: alt.IVector3 = alt.Vector3.zero
 
   constructor(
     private readonly internalPed: InternalPed,
   ) {
+    const {
+      heading,
+      health,
+      isWalking,
+      ragdoll,
+    } = internalPed.xsyncPed.syncedMeta
 
+    this.prevRagdoll = !!ragdoll
+    this.prevIsWalking = !!isWalking
+    this.prevHealth = health
+    this.prevHeading = heading
   }
 
   public destroy(): void {
@@ -34,7 +45,15 @@ export class NetOwnerPed implements IPedController {
   }
 
   private posIntervalHandler(): void {
-    this.internalPed.sendNetOwnerPosUpdate(this.internalPed.gamePed.pos)
+    const { pos } = this.internalPed.gamePed
+    if (
+      +pos.x.toFixed(3) === +this.prevPos.x.toFixed(3) &&
+      +pos.y.toFixed(3) === +this.prevPos.y.toFixed(3) &&
+      +pos.z.toFixed(3) === +this.prevPos.z.toFixed(3)
+    ) return
+
+    this.prevPos = pos
+    this.internalPed.sendNetOwnerPosUpdate(pos)
   }
 
   private metaIntervalHandler(): void {
@@ -68,6 +87,7 @@ export class NetOwnerPed implements IPedController {
         this.prevRagdoll = ragdoll
       }
 
+      // TODO: inspect bug with walking (ped idle but iswalking on server set as true)
       if (this.prevIsWalking !== isWalking) {
         updatedMeta.isWalking = +isWalking as WSBoolean
         this.prevIsWalking = isWalking

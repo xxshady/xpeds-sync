@@ -73,7 +73,7 @@ export class GamePed implements IPedController {
   public set pos({ x, y, z }: alt.IVector3) {
     native.setEntityCoords(
       this._scriptID,
-      x, y, z,
+      x, y, z - 1.0,
       false, false, false, false,
     )
   }
@@ -94,7 +94,7 @@ export class GamePed implements IPedController {
     if (value) {
       native.setPedToRagdoll(
         this._scriptID, 1, 1, 0,
-        false, false, false,
+        true, true, false,
       )
     }
   }
@@ -105,6 +105,10 @@ export class GamePed implements IPedController {
 
   public get heading(): number {
     return native.getEntityHeading(this._scriptID)
+  }
+
+  public set heading(value: number) {
+    native.setPedDesiredHeading(this._scriptID, value)
   }
 
   public async waitForSpawn(): Promise<void> {
@@ -147,6 +151,10 @@ export class GamePed implements IPedController {
       health: health,
       pos: this.pos,
     })
+  }
+
+  public clearTasks(): void {
+    native.clearPedTasksImmediately(this._scriptID)
   }
 
   private createPed({

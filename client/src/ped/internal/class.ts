@@ -50,7 +50,7 @@ export class InternalPed {
   }
 
   public static onPosChange(xsyncPed: XSyncPed, pos: alt.IVector3): void {
-    // log.log("onPosChange", "ped id:", xsyncPed.id, pos.x, pos.y)
+    log.log("onPosChange", "ped id:", xsyncPed.id, pos.x, pos.y)
 
     const ped = InternalPed.pedsByXsync.get(xsyncPed)
     if (!ped) return
@@ -106,11 +106,11 @@ export class InternalPed {
   }
 
   public sendNetOwnerPosUpdate(pos: alt.IVector3): void {
-    XSyncPed.pool.updateNetOwnerPos(this.xsyncPed, pos)
+    XSyncPed.updateNetOwnerPos(this.xsyncPed, pos)
   }
 
   public sendNetOwnerSyncedMetaUpdate(meta: Partial<IXSyncPedSyncedMeta>): void {
-    XSyncPed.pool.updateNetOwnerSyncedMeta(this.xsyncPed, meta)
+    XSyncPed.updateNetOwnerSyncedMeta(this.xsyncPed, meta)
   }
 
   private destroy(): void {
