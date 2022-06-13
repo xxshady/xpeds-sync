@@ -1,5 +1,10 @@
 # xpeds-sync
 
+## Installation
+```
+npm i xpeds-sync-client xpeds-sync-server
+```
+
 ## Usage example:
 
 ### client
