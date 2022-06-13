@@ -1,4 +1,4 @@
-# xpeds-sync
+# Very experimental peds sync for [alt:V](https://altv.mp) platform (WIP)
 
 ## Installation
 ```
