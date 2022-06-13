@@ -26,20 +26,32 @@ export class XPedsSync {
     },
   }
 
+  public readonly onPedStreamIn: IXPedsSyncOptions["onPedStreamIn"]
+  public readonly onPedStreamOut: IXPedsSyncOptions["onPedStreamOut"]
+  public readonly onPedNetOwnerChange: IXPedsSyncOptions["onPedNetOwnerChange"]
+
   // TODO: implement handling of user xsync
-  constructor(_xsync = xsync, options: IXPedsSyncOptions = {}) {
+  constructor(options: IXPedsSyncOptions = {}) {
     if (XPedsSync._instance) throw new Error("xpeds sync already initialized")
     XPedsSync._instance = this
-
-    new _xsync.XSyncEntity()
 
     for (const eventName in this.onServerEvents)
       alt.onServer(eventName, this.onServerEvents[eventName as AltClientEvents])
 
     const {
       nametags = false,
+      xsync: _xsync = xsync,
+      onPedStreamIn,
+      onPedStreamOut,
+      onPedNetOwnerChange,
     } = options
 
+    new _xsync.XSyncEntity()
+
     if (nametags) new PedNametags({})
+
+    this.onPedStreamIn = onPedStreamIn
+    this.onPedStreamOut = onPedStreamOut
+    this.onPedNetOwnerChange = onPedNetOwnerChange
   }
 }

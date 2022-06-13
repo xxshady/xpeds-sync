@@ -3,11 +3,12 @@ import * as native from "natives"
 import { Logger } from "xpeds-sync-shared"
 import type { XSyncPed } from "../../xsync-ped"
 import type { IPedController } from "../internal"
-import type { IGamePedOptions, ISpawnListener } from "./types"
+import type { ISpawnListener } from "./types"
 
 const log = new Logger("game-ped")
 
 export class GamePed implements IPedController {
+  private static readonly PED_TYPE = 0
   private static readonly peds = new Set<GamePed>()
 
   static {
@@ -18,19 +19,13 @@ export class GamePed implements IPedController {
   }
 
   private _scriptID = 0
-  private readonly options: IGamePedOptions
 
   private spawnListener: ISpawnListener | null
 
-  constructor(
-    xsyncPed: XSyncPed,
-    options: IGamePedOptions,
-  ) {
+  constructor(private readonly xsyncPed: XSyncPed) {
     const {
       model,
-    } = options
-
-    this.options = options
+    } = xsyncPed.syncedMeta
 
     let resolve = (): void => {}
     let reject = (): void => {}
@@ -45,7 +40,7 @@ export class GamePed implements IPedController {
       reject,
     }
 
-    alt.Utils.requestModel(model, 3000)
+    alt.Utils.requestModel(model, 10000)
       .then(() => {
         if (!xsyncPed.streamed) {
           this.spawnListener?.reject()
@@ -100,7 +95,7 @@ export class GamePed implements IPedController {
   }
 
   public get isWalking(): boolean {
-    return native.isPedWalking(this._scriptID) || native.isPedRunning(this._scriptID)
+    return native.getEntitySpeed(this._scriptID) > 2.0 && !this.ragdoll
   }
 
   public get heading(): number {
@@ -109,6 +104,16 @@ export class GamePed implements IPedController {
 
   public set heading(value: number) {
     native.setPedDesiredHeading(this._scriptID, value)
+  }
+
+  public get vehicleIsTryingToEnter(): [vehicle: number, seat: number, inside: boolean] {
+    const vehScriptID = native.getVehiclePedIsTryingToEnter(this._scriptID)
+
+    return [
+      vehScriptID,
+      native.getSeatPedIsTryingToEnter(this._scriptID),
+      native.isPedInVehicle(this._scriptID, vehScriptID, false),
+    ]
   }
 
   public async waitForSpawn(): Promise<void> {
@@ -146,24 +151,49 @@ export class GamePed implements IPedController {
     // native.resurrectPed(this._scriptID) // not working shit
 
     this.destroyInGame()
-    this.createPed({
-      model: this.options.model,
-      health: health,
-      pos: this.pos,
-    })
+    this.createPed(health, this.pos)
   }
 
   public clearTasks(): void {
     native.clearPedTasksImmediately(this._scriptID)
   }
 
-  private createPed({
-    model,
-    pos,
-    health,
-  }: IGamePedOptions = this.options): void {
-    const ped = native.createPed(
-      2,
+  public taskEnterVehicle(vehicle: alt.Vehicle, seat: number): void {
+    native.taskEnterVehicle(
+      this._scriptID,
+      vehicle,
+      -1,
+      seat,
+      3.0, // TEST
+      1,
+      0,
+    )
+  }
+
+  // public setIntoVehicle(vehicle: alt.Vehicle, seat: number): void {
+  //   native.setPedIntoVehicle(this._scriptID, vehicle, seat)
+  // }
+
+  public leaveVehicle(): void {
+    native.taskLeaveAnyVehicle(this._scriptID, 0, 1)
+  }
+
+  private createPed(_health?: number, _pos?: alt.IVector3): void {
+    let {
+      pos,
+      syncedMeta: {
+        // eslint-disable-next-line prefer-const
+        model, insideVehicle, vehicle, health,
+      },
+    } = this.xsyncPed
+
+    health = _health ?? health
+    pos = _pos ?? pos
+
+    let ped: number
+
+    const createPed = (): number => native.createPed(
+      GamePed.PED_TYPE,
       model,
       pos.x,
       pos.y,
@@ -171,6 +201,25 @@ export class GamePed implements IPedController {
       0,
       false, false,
     )
+
+    if (insideVehicle) {
+      if (!vehicle) {
+        log.error("synced meta .insideVehicleis true but no .vehicle")
+        ped = createPed()
+      }
+      else {
+        const [vehicleId, seat] = vehicle
+        const veh = alt.Vehicle.getByID(vehicleId)
+        if (!veh) {
+          log.error(`cant get vehicle id: ${vehicleId} for ped id: ${this.xsyncPed.id}`)
+          ped = createPed()
+        }
+        else
+          ped = native.createPedInsideVehicle(veh, GamePed.PED_TYPE, model, seat, false, false)
+      }
+    }
+    else
+      ped = createPed()
 
     alt.nextTick(() => {
       this.health = health
@@ -180,6 +229,9 @@ export class GamePed implements IPedController {
 
     // disable writhe
     native.setPedConfigFlag(ped, 281, true)
+
+    // red dot crosshair
+    native.setPedAsEnemy(ped, true)
 
     this._scriptID = ped
   }

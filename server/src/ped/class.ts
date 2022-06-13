@@ -22,6 +22,8 @@ export class Ped {
         ragdoll: 0,
         isWalking: 0,
         heading: 0,
+        insideVehicle: 0,
+        vehicle: 0,
       },
     )
 

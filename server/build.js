@@ -16,6 +16,5 @@ build({
   external: [
     ...sharedOptions.external,
     'alt-server',
-    'altv-xsync-entity-server'
   ],
 }).then(typesGenerator())

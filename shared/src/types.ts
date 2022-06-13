@@ -5,4 +5,7 @@ export interface IXSyncPedSyncedMeta {
   ragdoll: WSBoolean
   isWalking: WSBoolean
   heading: number
+  vehicle: [vehicleId: number, seat: number] | 0
+  insideVehicle: WSBoolean
+  // shotBy: [playerId: number]
 }

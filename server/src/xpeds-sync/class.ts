@@ -1,6 +1,6 @@
 import * as alt from "alt-server"
 import * as xsync from "altv-xsync-entity-server"
-import type { IAltClientEvent } from "xpeds-sync-shared"
+import type { IAltClientEvent, IXSyncPedSyncedMeta } from "xpeds-sync-shared"
 import { AltClientEvents, Logger } from "xpeds-sync-shared"
 import { InitXSyncPed } from "../xsync-ped"
 import type { XSyncPedClass } from "../xsync-ped"
@@ -31,6 +31,7 @@ export class XPedsSync {
       },
       {
         entityNetOwnerChange: this.onEntityNetOwnerChange.bind(this),
+        requestUpdateEntitySyncedMeta: this.onRequestUpdateEntitySyncedMeta.bind(this),
       },
     )
 
@@ -51,6 +52,17 @@ export class XPedsSync {
     if (!(entity instanceof this.XSyncPed)) return
 
     this.log.log("onEntityNetOwnerChange", entity.id, oldNetOwner?.name, "->", netOwner?.name)
+  }
+
+  private onRequestUpdateEntitySyncedMeta(
+    entity: xsync.Entity,
+    watcher: alt.Player,
+    changedMeta: Readonly<Partial<IXSyncPedSyncedMeta>>,
+  ): boolean {
+    if (!(entity instanceof this.XSyncPed)) return false
+
+    this.log.log("onRequestUpdateEntitySyncedMeta", Object.keys(changedMeta))
+    return true
   }
 
   // TODO: add async player adder to xsync (xsync can send events before peds sync init on clientside)
