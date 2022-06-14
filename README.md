@@ -21,7 +21,10 @@ new xpeds.XPedsSync({
     console.log("ped left streaming range (destroyed in the game)")
   },
   onPedNetOwnerChange: (ped, netOwner) => {
-    if (!netOwner) console.log("player is not netowner")
+    if (!netOwner) {
+      console.log("player is not netowner")
+      return
+    }
     console.log("player is netowner, give a ped task")
 
     const { x, y, z } = alt.Player.local.pos
