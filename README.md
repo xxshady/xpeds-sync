@@ -58,7 +58,7 @@ for (let i = 0; i < 1; ++i)
 import * as alt from "alt-server"
 import * as xpeds from "xpeds-sync-server"
 
-new xpeds.XPedsSync({
+const xpedsInstance = new xpeds.XPedsSync({
   customClientInit: true,
 })
 
