@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "node --es-module-specifier-resolution=node build.js -w",
     "build": "node --es-module-specifier-resolution=node build.js",
-    "types": "dts-bundle-generator --disable-symlinks-following -o dist/main.d.ts src/main.ts"
+    "types": "dts-bundle-generator --disable-symlinks-following --export-referenced-types=false -o dist/main.d.ts src/main.ts"
   },
   "type": "module"
 }

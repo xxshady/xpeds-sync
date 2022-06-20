@@ -1,7 +1,8 @@
 import * as alt from "alt-client"
 import * as xsync from "altv-xsync-entity-client"
-import { AltClientEvents, Logger } from "xpeds-sync-shared"
-import type { IAltClientEvent } from "xpeds-sync-shared"
+import type { IAltClientEvent, IAltServerEvent } from "xpeds-sync-shared"
+import { AltClientEvents, Logger, AltServerEvents } from "xpeds-sync-shared"
+
 import { XSyncPed } from "../xsync-ped"
 import type { IXPedsSyncOptions } from "./types"
 import { PedNametags } from "./nametags"
@@ -23,6 +24,8 @@ export class XPedsSync {
       this.log.log("onServer init ped pool:", pedPoolId)
 
       XSyncPed.initPool(pedPoolId)
+
+      this.emitAltServer(AltServerEvents.InitResponse)
     },
   }
 
@@ -53,5 +56,9 @@ export class XPedsSync {
     this.onPedStreamIn = onPedStreamIn
     this.onPedStreamOut = onPedStreamOut
     this.onPedNetOwnerChange = onPedNetOwnerChange
+  }
+
+  private emitAltServer <K extends AltServerEvents>(eventName: K, ...args: IAltServerEvent[K]): void {
+    alt.emitServerRaw(eventName, ...args)
   }
 }

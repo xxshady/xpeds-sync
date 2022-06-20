@@ -1,15 +1,19 @@
 import type * as alt from "alt-server"
-import type * as xsync from "altv-xsync-entity-server"
 import { Logger } from "xpeds-sync-shared"
 import type { IXSyncPedSyncedMeta } from "xpeds-sync-shared"
 import type { XSyncPedClass } from "./types"
+import type * as xsync from "altv-xsync-entity-server"
 
 const log = new Logger("xsync-ped")
 
-export const InitXSyncPed = ({
-  Entity,
-  EntityPool,
-}: typeof xsync): XSyncPedClass => {
+export const InitXSyncPed = (
+  {
+    Entity,
+    EntityPool,
+  }: typeof xsync,
+  maxStreamedIn: number,
+  streamRange: number,
+): XSyncPedClass => {
   let id = 0
   let pedPool: xsync.EntityPool
 
@@ -17,7 +21,7 @@ export const InitXSyncPed = ({
     try {
       pedPool = new EntityPool(id++, {
         // TODO: add user option for this
-        maxStreamedIn: 10,
+        maxStreamedIn,
       })
 
       log.log("created ped pool id:", pedPool.id)
@@ -29,16 +33,19 @@ export const InitXSyncPed = ({
   return class XSyncPed extends Entity<IXSyncPedSyncedMeta> {
     public static pool = pedPool
 
-    constructor(pos: alt.IVector3, syncedMeta: IXSyncPedSyncedMeta) {
+    constructor(
+      pos: alt.IVector3,
+      dimension: number,
+      syncedMeta: IXSyncPedSyncedMeta,
+    ) {
       super(
         pedPool,
         pos,
         syncedMeta,
         {},
         // TODO: add user options for these
-        0,
-        20,
-        10,
+        dimension,
+        streamRange,
       )
     }
   }

@@ -1,7 +1,8 @@
 import * as alt from "alt-server"
-import { XPedsSync } from "../xpeds-sync"
 import type * as xsync from "altv-xsync-entity-server"
 import type { IXSyncPedSyncedMeta } from "xpeds-sync-shared"
+import { InternalXPedsSync } from "../internal-xpeds-sync"
+import type { IPedOptions } from "./types"
 
 export class Ped {
   private static readonly pedsById: Partial<Record<number, Ped>> = {}
@@ -13,9 +14,14 @@ export class Ped {
   private readonly xsyncInstance: xsync.Entity<IXSyncPedSyncedMeta>
   private _valid = true
 
-  constructor(model: number, pos: alt.IVector3) {
-    this.xsyncInstance = new XPedsSync.instance.XSyncPed(
+  constructor(model: number, pos: alt.IVector3, options: IPedOptions = {}) {
+    const {
+      dimension = alt.defaultDimension,
+    } = options
+
+    this.xsyncInstance = new InternalXPedsSync.instance.XSyncPed(
       pos,
+      dimension,
       {
         health: 200,
         model,

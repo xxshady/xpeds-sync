@@ -1,9 +1,7 @@
-import * as alt from "alt-server"
+import type * as alt from "alt-server"
 import * as xsync from "altv-xsync-entity-server"
-import type { IAltClientEvent, IXSyncPedSyncedMeta } from "xpeds-sync-shared"
-import { AltClientEvents, Logger } from "xpeds-sync-shared"
-import { InitXSyncPed } from "../xsync-ped"
-import type { XSyncPedClass } from "../xsync-ped"
+import type { IXPedsSyncOptions } from "../types"
+import { InternalXPedsSync } from "../internal-xpeds-sync"
 
 export class XPedsSync {
   private static _instance: XPedsSync | null = null
@@ -15,58 +13,39 @@ export class XPedsSync {
     return XPedsSync._instance
   }
 
-  private readonly log = new Logger("main")
-
-  public readonly XSyncPed: XSyncPedClass
+  private readonly internal: InternalXPedsSync
+  private readonly customClientInit: boolean
 
   // TODO: implement handling of user xsync
-  constructor(_xsync = xsync) {
+  constructor(options: IXPedsSyncOptions = {}) {
     if (XPedsSync._instance) throw new Error("xpeds sync already initialized")
     XPedsSync._instance = this
 
-    new _xsync.XSyncEntity(
-      100,
-      {
-        localhost: true,
-      },
-      {
-        entityNetOwnerChange: this.onEntityNetOwnerChange.bind(this),
-        requestUpdateEntitySyncedMeta: this.onRequestUpdateEntitySyncedMeta.bind(this),
-      },
-    )
+    const {
+      xsync: _xsync = xsync,
+      customClientInit = false, // false means: use player connect event for init
+      maxStreamedIn = 50,
+      streamRange = 200,
+    } = options
+    this.customClientInit = customClientInit
 
-    this.XSyncPed = InitXSyncPed(_xsync)
-
-    alt.on("playerConnect", this.onPlayerConnect.bind(this))
+    this.internal = new InternalXPedsSync({
+      // TODO: fix "Cannot find name 'xsync' in d.ts"
+      xsync: _xsync as typeof xsync,
+      customClientInit,
+      maxStreamedIn,
+      streamRange,
+    })
   }
 
-  private emitAltClient <K extends AltClientEvents>(player: alt.Player, eventName: K, ...args: IAltClientEvent[K]): void {
-    player.emit(eventName, ...args)
-  }
+  public initClient(player: alt.Player): void {
+    if (!this.customClientInit) {
+      throw new Error(
+        "[initClient] you must first set 'customClientInit' to true in the constructor," +
+        " otherwise client is initiated automatically when the player connects",
+      )
+    }
 
-  private onEntityNetOwnerChange(
-    entity: xsync.Entity,
-    netOwner: alt.Player | null,
-    oldNetOwner: alt.Player | null,
-  ): void {
-    if (!(entity instanceof this.XSyncPed)) return
-
-    this.log.log("onEntityNetOwnerChange", entity.id, oldNetOwner?.name, "->", netOwner?.name)
-  }
-
-  private onRequestUpdateEntitySyncedMeta(
-    entity: xsync.Entity,
-    watcher: alt.Player,
-    changedMeta: Readonly<Partial<IXSyncPedSyncedMeta>>,
-  ): boolean {
-    if (!(entity instanceof this.XSyncPed)) return false
-
-    this.log.log("onRequestUpdateEntitySyncedMeta", Object.keys(changedMeta))
-    return true
-  }
-
-  // TODO: add async player adder to xsync (xsync can send events before peds sync init on clientside)
-  private onPlayerConnect(player: alt.Player): void {
-    this.emitAltClient(player, AltClientEvents.Init, this.XSyncPed.pool.id)
+    this.internal.initClient(player)
   }
 }
