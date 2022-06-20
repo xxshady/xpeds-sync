@@ -68,7 +68,3 @@ alt.on("playerConnect", (player) => {
   }, 1000)
 })
 ```
-
-## TODO
-
-- add async player adder to xsync (xsync can send events before peds sync init on clientside)
