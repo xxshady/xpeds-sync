@@ -26,6 +26,7 @@ export class XPedsSync {
       customClientInit = false, // false means: use player connect event for init
       maxStreamedIn = 50,
       streamRange = 200,
+      onPedDeath = (): void => {},
     } = options
     this.customClientInit = customClientInit
 
@@ -35,6 +36,7 @@ export class XPedsSync {
       customClientInit,
       maxStreamedIn,
       streamRange,
+      onPedDeath,
     })
   }
 

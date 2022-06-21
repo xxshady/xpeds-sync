@@ -2,7 +2,8 @@ import type * as alt from "alt-server"
 import { Logger } from "xpeds-sync-shared"
 import type { IXSyncPedSyncedMeta } from "xpeds-sync-shared"
 import type { XSyncPedClass } from "./types"
-import type * as xsync from "altv-xsync-entity-server"
+import * as xsync from "altv-xsync-entity-server"
+import { InternalPed } from "../internal-ped"
 
 const log = new Logger("xsync-ped")
 
@@ -30,7 +31,12 @@ export const InitXSyncPed = (
     catch {}
   }
 
-  return class XSyncPed extends Entity<IXSyncPedSyncedMeta> {
+  @xsync.onEntityEvents<XSyncPed>(pedPool, {
+    syncedMetaChange: (ped, changedMeta, byNetOwner) => {
+      InternalPed.handleSyncedMetaChange(ped, changedMeta, byNetOwner)
+    },
+  })
+  class XSyncPed extends Entity<IXSyncPedSyncedMeta> {
     public static pool = pedPool
 
     constructor(
@@ -49,4 +55,6 @@ export const InitXSyncPed = (
       )
     }
   }
+
+  return XSyncPed
 }

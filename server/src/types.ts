@@ -1,5 +1,8 @@
 // import type * as xsync from "altv-xsync-entity-server"
 
+import type * as alt from "alt-server"
+import type { Ped } from "./ped"
+
 export interface IXPedsSyncOptions {
   // TODO: fix "Cannot find name 'xsync' in d.ts"
   xsync?: { Entity: unknown; EntityPool: unknown; XSyncEntity: unknown }
@@ -15,4 +18,6 @@ export interface IXPedsSyncOptions {
    * `200` by default
    */
   streamRange?: number
+
+  onPedDeath?: (ped: Ped, killer: alt.Player | null) => void
 }

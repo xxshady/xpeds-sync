@@ -1,6 +1,7 @@
 import * as alt from "alt-server"
 import type * as xsync from "altv-xsync-entity-server"
 import type { IXSyncPedSyncedMeta } from "xpeds-sync-shared"
+import { InternalPed } from "../internal-ped"
 import { InternalXPedsSync } from "../internal-xpeds-sync"
 import type { IPedOptions } from "./types"
 
@@ -11,33 +12,25 @@ export class Ped {
     return Ped.pedsById[id] ?? null
   }
 
-  private readonly xsyncInstance: xsync.Entity<IXSyncPedSyncedMeta>
   private _valid = true
+
+  private readonly internal: InternalPed
 
   constructor(model: number, pos: alt.IVector3, options: IPedOptions = {}) {
     const {
       dimension = alt.defaultDimension,
     } = options
 
-    this.xsyncInstance = new InternalXPedsSync.instance.XSyncPed(
-      pos,
-      dimension,
-      {
-        health: 200,
-        model,
-        ragdoll: 0,
-        isWalking: 0,
-        heading: 0,
-        insideVehicle: 0,
-        vehicle: 0,
-      },
+    this.internal = new InternalPed(
+      this,
+      pos, dimension, model,
     )
 
-    Ped.pedsById[this.xsyncInstance.id] = this
+    Ped.pedsById[this.internal.id] = this
   }
 
   public get id(): number {
-    return this.xsyncInstance.id
+    return this.internal.id
   }
 
   public get valid(): boolean {
@@ -45,25 +38,29 @@ export class Ped {
   }
 
   public get netOwner(): alt.Player | null {
-    return this.xsyncInstance.netOwner
+    return this.internal.netOwner
   }
 
   public get pos(): alt.Vector3 {
-    return new alt.Vector3(this.xsyncInstance.pos)
+    return this.internal.pos
   }
 
   public set pos(value: alt.IVector3) {
-    this.xsyncInstance.pos = value
+    this.internal.pos = value
   }
 
   public get health(): number {
-    return this.xsyncInstance.syncedMeta.health
+    return this.internal.syncedMeta.health
   }
 
   public set health(value: number) {
-    this.xsyncInstance.setSyncedMeta({
+    this.internal.setSyncedMeta({
       health: value,
     })
+  }
+
+  public get isDead(): boolean {
+    return this.internal.isDead
   }
 
   public destroy(): void {
@@ -71,6 +68,6 @@ export class Ped {
     this._valid = false
 
     delete Ped.pedsById[this.id]
-    this.xsyncInstance.destroy()
+    this.internal.destroy()
   }
 }

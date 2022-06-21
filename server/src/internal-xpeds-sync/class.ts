@@ -25,11 +25,14 @@ export class InternalXPedsSync {
   private readonly _xsync: xsync.XSyncEntity
   private readonly pendingPlayerInits = new Map<alt.Player, IPendingPlayerInit>()
 
+  public readonly pedDeathHandler: Required<IXPedsSyncOptions>["onPedDeath"]
+
   constructor({
     xsync: _xsync,
     customClientInit,
     maxStreamedIn,
     streamRange,
+    onPedDeath,
   }: Required<IXPedsSyncOptions>,
   ) {
     if (InternalXPedsSync._instance) throw new Error("xpeds sync already initialized")
@@ -51,6 +54,7 @@ export class InternalXPedsSync {
     })
 
     this.XSyncPed = InitXSyncPed(xsync, maxStreamedIn, streamRange)
+    this.pedDeathHandler = onPedDeath
 
     if (!customClientInit)
       alt.on("playerConnect", this.initClientInternal.bind(this))
