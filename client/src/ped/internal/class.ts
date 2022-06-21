@@ -1,4 +1,3 @@
-import * as native from "natives"
 import * as alt from "alt-client"
 import type { IXSyncPedSyncedMeta } from "xpeds-sync-shared"
 import { Logger } from "xpeds-sync-shared"
@@ -50,7 +49,10 @@ export class InternalPed {
 
     if (health != null) {
       alt.nextTick(() => {
-        ped.gamePed.health = health
+        if (health > 0 && ped.gamePed.health <= 0)
+          ped.gamePed.resurrect(health)
+        else
+          ped.gamePed.health = health
       })
     }
   }

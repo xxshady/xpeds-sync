@@ -148,10 +148,9 @@ export class GamePed implements IPedController {
   public resurrect(health: number): void {
     if (!this._scriptID) return
 
-    // native.resurrectPed(this._scriptID) // not working shit
-
-    this.destroyInGame()
+    const prevPed = this._scriptID
     this.createPed(health, this.pos)
+    this.destroyInGame(prevPed)
   }
 
   public clearTasks(): void {
@@ -236,7 +235,7 @@ export class GamePed implements IPedController {
     this._scriptID = ped
   }
 
-  private destroyInGame(): void {
-    native.deletePed(this._scriptID)
+  private destroyInGame(ped = this._scriptID): void {
+    native.deletePed(ped)
   }
 }
