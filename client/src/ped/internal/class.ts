@@ -102,7 +102,7 @@ export class InternalPed {
 
         XPedsSync.instance.onPedStreamIn?.(this.publicInstance)
       })
-      .catch(e => log.error("gamePed.waitForSpawn", e.stack))
+      .catch(e => log.error("gamePed.waitForSpawn", e?.stack))
 
     InternalPed.streamedIn.add(this)
   }
@@ -149,7 +149,7 @@ export class InternalPed {
 
         XPedsSync.instance.onPedNetOwnerChange?.(this.publicInstance, alt.Player.local)
       })
-      .catch(e => log.error("gamePed.waitForSpawn", e.stack))
+      .catch(e => log.error("gamePed.waitForSpawn", e?.stack))
   }
 
   private removeNetOwner(createObserver: boolean): void {
@@ -169,6 +169,6 @@ export class InternalPed {
 
         XPedsSync.instance.onPedNetOwnerChange?.(this.publicInstance, null)
       })
-      .catch(e => log.error("gamePed.waitForSpawn", e.stack))
+      .catch(e => log.error("gamePed.waitForSpawn", e?.stack))
   }
 }
