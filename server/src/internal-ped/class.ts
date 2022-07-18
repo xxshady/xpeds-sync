@@ -10,7 +10,7 @@ export class InternalPed {
   public static handleSyncedMetaChange(
     xsyncPed: XSyncPed,
     changedMeta: Partial<Readonly<IXSyncPedSyncedMeta>>,
-    byNetOwner?: alt.Player,
+    byPlayer: alt.Player | null,
   ): void {
     const internalPed = InternalPed.internalPedByXsyncPed.get(xsyncPed)
     if (!internalPed)
@@ -22,8 +22,7 @@ export class InternalPed {
       if (health <= 0 && !internalPed.isDead) {
         internalPed.isDead = true
 
-        // TODO: implement ped death killer
-        InternalXPedsSync.instance.pedDeathHandler(internalPed.publicInstance, null)
+        InternalXPedsSync.instance.pedDeathHandler(internalPed.publicInstance, byPlayer)
       }
       else if (health >= 0 && internalPed.isDead)
         internalPed.isDead = false

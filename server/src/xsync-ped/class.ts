@@ -21,7 +21,6 @@ export const InitXSyncPed = (
   while (true) {
     try {
       pedPool = new EntityPool(id++, {
-        // TODO: add user option for this
         maxStreamedIn,
       })
 
@@ -32,8 +31,8 @@ export const InitXSyncPed = (
   }
 
   @xsync.onEntityEvents<XSyncPed>(pedPool, {
-    syncedMetaChange: (ped, changedMeta, byNetOwner) => {
-      InternalPed.handleSyncedMetaChange(ped, changedMeta, byNetOwner)
+    syncedMetaChange: (ped, changedMeta, byPlayer) => {
+      InternalPed.handleSyncedMetaChange(ped, changedMeta, byPlayer)
     },
   })
   class XSyncPed extends Entity<IXSyncPedSyncedMeta> {
@@ -49,7 +48,6 @@ export const InitXSyncPed = (
         pos,
         syncedMeta,
         {},
-        // TODO: add user options for these
         dimension,
         streamRange,
       )
