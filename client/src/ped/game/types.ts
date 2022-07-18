@@ -9,5 +9,5 @@ export interface IGamePedOptions {
 export interface ISpawnListener {
   promise: Promise<void>
   resolve: () => void
-  reject: () => void
+  reject: (error: Error) => void
 }

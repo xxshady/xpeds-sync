@@ -3,6 +3,7 @@ import * as native from "natives"
 import { Logger } from "xpeds-sync-shared"
 import type { XSyncPed } from "../../xsync-ped"
 import type { IPedController } from "../internal"
+import { PedNotStreamedError } from "./errors"
 import type { ISpawnListener } from "./types"
 
 const log = new Logger("game-ped")
@@ -28,7 +29,7 @@ export class GamePed implements IPedController {
     } = xsyncPed.syncedMeta
 
     let resolve = (): void => {}
-    let reject = (): void => {}
+    let reject = (error: Error): void => {}
     const promise = new Promise<void>((_resolve, _reject) => {
       resolve = _resolve
       reject = _reject
@@ -43,7 +44,7 @@ export class GamePed implements IPedController {
     alt.Utils.requestModel(model, 10000)
       .then(() => {
         if (!xsyncPed.streamed) {
-          this.spawnListener?.reject()
+          this.spawnListener?.reject(new PedNotStreamedError("ped is not streamed anymore"))
           return
         }
         this.spawnListener?.resolve()
@@ -51,7 +52,7 @@ export class GamePed implements IPedController {
         GamePed.peds.add(this)
       })
       .catch(e => {
-        this.spawnListener?.reject()
+        this.spawnListener?.reject(e)
         log.error("failed to load model:", model, "of ped id:", xsyncPed.id)
         log.error(e)
       })
