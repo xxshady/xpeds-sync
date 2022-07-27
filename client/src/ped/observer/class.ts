@@ -9,10 +9,17 @@ export class ObserverPed implements IPedController {
   private readonly log: Logger
 
   private prevRagdoll = false
-  private startRagdollTime = 0
+  private endRagdollTime: number | null = null
+  private prevLocalRagdoll = false
+  private startLocalRagdollTime: number | null = null
   private lastDamageTime = 0
   private lastSyncedHealth: number
   private prevVehicle: boolean
+  private prevIsWalking = false
+
+  private startLocalIsWalkingTime: number | null = null
+  private prevLocalIsWalking = false
+  private endIsWalkingTime: number | null = null
 
   constructor(private readonly internalPed: InternalPed) {
     this.log = new Logger(`observer: ${internalPed.xsyncPed.id}`)
@@ -55,20 +62,30 @@ export class ObserverPed implements IPedController {
     const dist = gamePed.pos.distanceTo(targetPos)
 
     if (dist > 5.0) {
-      gamePed.pos = targetPos
+      let z = targetPos.z
+      if (!syncedMeta.health) z += 1.0
+
+      gamePed.pos = {
+        ...targetPos,
+        z,
+      }
       return
     }
 
-    // if (!syncedMeta.ragdoll) return
     if (!syncedMeta.health) return
 
-    // TODO: fix wooden ragdoll
+    const multiplier = syncedMeta.isWalking ? 0.3 : 0.5
+    let zMultipler = multiplier * 0.5
 
-    const multiplier = syncedMeta.isWalking ? 2.6 : 4.0
-    gamePed.setVelocity({
-      x: (this.internalPed.xsyncPed.pos.x - gamePed.pos.x) * multiplier,
-      y: (this.internalPed.xsyncPed.pos.y - gamePed.pos.y) * multiplier,
-      z: (this.internalPed.xsyncPed.pos.z - gamePed.pos.z) * multiplier,
+    if (!syncedMeta.ragdoll) zMultipler *= 0.01
+    // this.log.log("setvelocity multiplier:", multiplier)
+
+    const { pos } = gamePed
+
+    gamePed.applyForce({
+      x: (targetPos.x - pos.x) * multiplier,
+      y: (targetPos.y - pos.y) * multiplier,
+      z: (targetPos.z - pos.z) * zMultipler,
     })
   }
 
@@ -77,7 +94,6 @@ export class ObserverPed implements IPedController {
       pos,
       syncedMeta: {
         health,
-        isWalking,
         heading,
         vehicle,
         insideVehicle,
@@ -91,28 +107,68 @@ export class ObserverPed implements IPedController {
 
     let {
       ragdoll,
-    } = this.internalPed.xsyncPed.syncedMeta as { ragdoll: boolean | number }
+      isWalking,
+    } = this.internalPed.xsyncPed.syncedMeta as { ragdoll: boolean | number; isWalking: boolean | number }
     ragdoll = !!ragdoll
+    isWalking = !!isWalking
 
     const { gamePed } = this.internalPed
     const now = Date.now()
 
-    this.internalPed.gamePed.ragdoll = ragdoll
+    gamePed.ragdoll = ragdoll
+
+    const localRagdoll = gamePed.ragdoll
+    const localIsWalking = gamePed.isWalking
+
     if (this.prevRagdoll !== ragdoll) {
-      if (ragdoll) this.startRagdollTime = now
+      if (!ragdoll) this.endRagdollTime = now
+      else this.endRagdollTime = null
+
       this.prevRagdoll = ragdoll
     }
+    else if (this.endRagdollTime !== null && ((now - this.endRagdollTime) > 2000))
+      this.endRagdollTime = null
 
-    if ((now - this.startRagdollTime) < 75) {
-      alt.setRotationVelocity(
-        gamePed.scriptID,
-        Math.random() * 5.0,
-        Math.random() * 5.0,
-        Math.random() * 5.0,
-      )
+    if (this.prevLocalRagdoll !== localRagdoll) {
+      if (localRagdoll) this.startLocalRagdollTime = now
+      else this.startLocalRagdollTime = null
+
+      this.prevLocalRagdoll = localRagdoll
     }
 
-    if (isWalking && !vehicle) {
+    if (this.startLocalRagdollTime !== null &&
+      !ragdoll && localRagdoll && !this.endRagdollTime &&
+      ((now - this.startLocalRagdollTime) > 500)
+    ) {
+      this.startLocalRagdollTime = null
+      gamePed.clearTasksImmediately()
+    }
+
+    // disable vehicle for now TODO: vehicle sync
+    // if (isWalking && !vehicle) {
+
+    if (this.prevIsWalking !== isWalking) {
+      if (!isWalking) this.endIsWalkingTime = now
+      else this.endIsWalkingTime = null
+
+      this.prevIsWalking = isWalking
+    }
+
+    if (this.prevLocalIsWalking !== localIsWalking) {
+      if (localIsWalking) this.startLocalIsWalkingTime = now
+      else this.startLocalIsWalkingTime = null
+
+      this.prevLocalIsWalking = localIsWalking
+    }
+
+    if (this.startLocalIsWalkingTime !== null &&
+      !isWalking && localIsWalking && !this.endIsWalkingTime &&
+      ((now - this.startLocalIsWalkingTime) > 500)
+    ) {
+      this.startLocalRagdollTime = null
+      gamePed.clearTasksImmediately()
+    }
+    else if (isWalking) {
       const gamePos = gamePed.pos
       const speed = gamePos.distanceTo(pos) * 1.5
 
@@ -146,7 +202,7 @@ export class ObserverPed implements IPedController {
     }
     else if (inside) gamePed.leaveVehicle()
 
-    // gamePed.heading = heading
+    gamePed.heading = heading
   }
 
   private damageTickHandler(): void {

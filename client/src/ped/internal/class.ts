@@ -64,6 +64,7 @@ export class InternalPed {
     if (!ped) return
 
     if (!ped.netOwnerPed) return
+
     ped.gamePed.pos = pos
   }
 

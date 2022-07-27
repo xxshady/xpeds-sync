@@ -89,7 +89,7 @@ export class GamePed implements IPedController {
   public set ragdoll(value: boolean) {
     if (value) {
       native.setPedToRagdoll(
-        this._scriptID, 1, 1, 0,
+        this._scriptID, 0, 0, 0,
         true, true, false,
       )
     }
@@ -132,8 +132,15 @@ export class GamePed implements IPedController {
     this._scriptID = 0
   }
 
-  public setVelocity({ x, y, z }: alt.IVector3): void {
-    native.setEntityVelocity(this._scriptID, x, y, z)
+  public applyForce({ x, y, z }: alt.IVector3): void {
+    native.applyForceToEntity(
+      this._scriptID,
+      1,
+      x, y, z,
+      0, 0, 0,
+      0,
+      false, true, true, true, true,
+    )
   }
 
   public gotoCoord({ x, y, z }: alt.IVector3, speed: number, heading: number): void {
@@ -155,6 +162,10 @@ export class GamePed implements IPedController {
   }
 
   public clearTasks(): void {
+    native.clearPedTasks(this._scriptID)
+  }
+
+  public clearTasksImmediately(): void {
     native.clearPedTasksImmediately(this._scriptID)
   }
 
