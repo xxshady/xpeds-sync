@@ -1,12 +1,10 @@
 import * as alt from "alt-server"
-import type * as xsync from "altv-xsync-entity-server"
-import type { IXSyncPedSyncedMeta } from "xpeds-sync-shared"
 import { InternalPed } from "../internal-ped"
-import { InternalXPedsSync } from "../internal-xpeds-sync"
 import type { IPedOptions } from "./types"
 
 export class Ped {
   private static readonly pedsById: Partial<Record<number, Ped>> = {}
+  public static readonly all: readonly Ped[] = []
 
   public static getByID(id: number): Ped | null {
     return Ped.pedsById[id] ?? null
@@ -26,7 +24,8 @@ export class Ped {
       pos, dimension, model,
     )
 
-    Ped.pedsById[this.internal.id] = this
+    Ped.pedsById[this.internal.id] = this;
+    (Ped.all as Ped[]).push(this)
   }
 
   public get id(): number {
@@ -68,6 +67,19 @@ export class Ped {
     this._valid = false
 
     delete Ped.pedsById[this.id]
+
+    const idx = Ped.all.indexOf(this)
+    if (idx !== -1)
+      (Ped.all as Ped[]).splice(idx, 1)
+
     this.internal.destroy()
+  }
+
+  public setNetOwner(player: alt.Player, disableMigration?: boolean): void {
+    this.internal.xsyncInstance.setNetOwner(player, disableMigration)
+  }
+
+  public resetNetOwner(): void {
+    this.internal.xsyncInstance.resetNetOwner()
   }
 }

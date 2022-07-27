@@ -29,7 +29,7 @@ export class InternalPed {
     }
   }
 
-  private readonly xsyncInstance: XSyncPed
+  public readonly xsyncInstance: XSyncPed
   public readonly id: number
   public isDead = false
 
