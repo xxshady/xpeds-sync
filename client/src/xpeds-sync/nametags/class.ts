@@ -72,7 +72,7 @@ export class PedNametags {
   }
 
   private draw(ped: InternalPed, scale: number): void {
-    const fullName = `ped ${ped.xsyncPed.netOwnered ? "~gl~own~w~" : ""} ~b~[${ped.xsyncPed.id}]`
+    const fullName = `${ped.xsyncPed.netOwnered ? "~pl~" : ""}ped~w~ ~b~[${ped.xsyncPed.id}]`
     scale *= this.fontSize
 
     native.beginTextCommandDisplayText("STRING")
@@ -106,12 +106,9 @@ export class PedNametags {
 
     health -= 100
     if (health < 0) health = 0
+    else if (health > 100) health = 100
 
-    const { y: resY } = alt.getScreenResolution()
-
-    let y = scale * (0.005 * (resY / 1080))
-    y += yOffset
-
+    const y = yOffset * scale * 2.5
     const width = maxWidth / 100
 
     this.drawRect(x, y, maxWidth + border * 2, height + border * 2, ...borderColor)
