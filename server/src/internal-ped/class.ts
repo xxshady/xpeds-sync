@@ -22,7 +22,11 @@ export class InternalPed {
       if (health <= 0 && !internalPed.isDead) {
         internalPed.isDead = true
 
-        InternalXPedsSync.instance.pedDeathHandler(internalPed.publicInstance, byPlayer)
+        const killer: alt.Player | null = (byPlayer === internalPed.netOwner)
+          ? null // TODO: add netowner handling of ped damage
+          : byPlayer
+
+        InternalXPedsSync.instance.pedDeathHandler(internalPed.publicInstance, killer)
       }
       else if (health >= 0 && internalPed.isDead)
         internalPed.isDead = false
