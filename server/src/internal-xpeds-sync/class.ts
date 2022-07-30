@@ -64,12 +64,13 @@ export class InternalXPedsSync {
   }
 
   public initClient(player: alt.Player): void {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.initClientInternal(player)
-      .then(() => {
-        this._xsync.initClient(player)
-      })
       .catch(e => {
         this.log.error(`initClient player: ${player.name} [${player.id}] failed, error: ${e}`)
+      })
+      .then(() => {
+        this._xsync.initClient(player)
       })
   }
 

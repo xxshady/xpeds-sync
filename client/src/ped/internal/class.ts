@@ -96,16 +96,17 @@ export class InternalPed {
 
     this.gamePed = new GamePed(xsyncPed)
 
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.gamePed.waitForSpawn()
+      .catch(e => {
+        if (e instanceof PedNotStreamedError) return
+        log.error("gamePed.waitForSpawn", e?.stack)
+      })
       .then(() => {
         if (!xsyncPed.netOwnered)
           this.observerPed = new ObserverPed(this)
 
         XPedsSync.instance.onPedStreamIn?.(this.publicInstance)
-      })
-      .catch(e => {
-        if (e instanceof PedNotStreamedError) return
-        log.error("gamePed.waitForSpawn", e?.stack)
       })
 
     InternalPed.streamedIn.add(this)
@@ -140,7 +141,12 @@ export class InternalPed {
     if (this.netOwnerPed)
       throw new Error("initNetOwner netOwner already created")
 
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.gamePed.waitForSpawn()
+      .catch(e => {
+        if (e instanceof PedNotStreamedError) return
+        log.error("gamePed.waitForSpawn", e?.stack)
+      })
       .then(() => {
         if (!this.xsyncPed.netOwnered) return
 
@@ -153,14 +159,15 @@ export class InternalPed {
 
         XPedsSync.instance.onPedNetOwnerChange?.(this.publicInstance, alt.Player.local)
       })
+  }
+
+  private removeNetOwner(createObserver: boolean): void {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    this.gamePed.waitForSpawn()
       .catch(e => {
         if (e instanceof PedNotStreamedError) return
         log.error("gamePed.waitForSpawn", e?.stack)
       })
-  }
-
-  private removeNetOwner(createObserver: boolean): void {
-    this.gamePed.waitForSpawn()
       .then(() => {
         if (!this.netOwnerPed) return
         if (this.xsyncPed.netOwnered) return
@@ -175,10 +182,6 @@ export class InternalPed {
         this.observerPed = new ObserverPed(this)
 
         XPedsSync.instance.onPedNetOwnerChange?.(this.publicInstance, null)
-      })
-      .catch(e => {
-        if (e instanceof PedNotStreamedError) return
-        log.error("gamePed.waitForSpawn", e?.stack)
       })
   }
 }

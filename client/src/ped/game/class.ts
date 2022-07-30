@@ -41,7 +41,13 @@ export class GamePed implements IPedController {
       reject,
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     alt.Utils.requestModel(model, 10000)
+      .catch(e => {
+        this.spawnListener?.reject(e)
+        log.error("failed to load model:", model, "of ped id:", xsyncPed.id)
+        log.error(e)
+      })
       .then(() => {
         if (!xsyncPed.streamed) {
           this.spawnListener?.reject(new PedNotStreamedError("ped is not streamed anymore"))
@@ -50,11 +56,6 @@ export class GamePed implements IPedController {
         this.spawnListener?.resolve()
         this.createPed()
         GamePed.peds.add(this)
-      })
-      .catch(e => {
-        this.spawnListener?.reject(e)
-        log.error("failed to load model:", model, "of ped id:", xsyncPed.id)
-        log.error(e)
       })
   }
 
