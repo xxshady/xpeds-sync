@@ -2,6 +2,10 @@ import * as alt from "alt-client"
 import { InternalPed } from "./internal"
 
 export class Ped {
+  public static getByID(id: number): Ped | null {
+    return InternalPed.pedsById[id]?.publicInstance ?? null
+  }
+
   public static get streamedIn(): Ped[] {
     return [...InternalPed.streamedIn].map(p => p.publicInstance)
   }

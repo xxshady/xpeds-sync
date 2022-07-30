@@ -13,13 +13,16 @@ const log = new Logger("internal-ped")
 export class InternalPed {
   public static readonly player = alt.Player.local
   public static readonly streamedIn = new Set<InternalPed>()
+  public static readonly pedsById: Record<number, InternalPed> = {}
 
   private static readonly pedsByXsync = new Map<XSyncPed, InternalPed>()
 
   public static onStreamIn(xsyncPed: XSyncPed): void {
     log.log("onStreamIn", "ped id:", xsyncPed.id)
+    const ped = new InternalPed(xsyncPed)
 
-    InternalPed.pedsByXsync.set(xsyncPed, new InternalPed(xsyncPed))
+    InternalPed.pedsByXsync.set(xsyncPed, ped)
+    InternalPed.pedsById[xsyncPed.id] = ped
   }
 
   public static onStreamOut(xsyncPed: XSyncPed): void {
@@ -30,6 +33,7 @@ export class InternalPed {
 
     ped.destroy()
     InternalPed.pedsByXsync.delete(xsyncPed)
+    delete InternalPed.pedsById[xsyncPed.id]
   }
 
   public static onSyncedMetaChange(xsyncPed: XSyncPed, meta: Partial<IXSyncPedSyncedMeta>): void {
