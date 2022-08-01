@@ -19,6 +19,7 @@ export const InitXSyncPed = (
   }: typeof xsync,
   maxStreamedIn: number,
   streamRange: number,
+  migrationRange: number,
   pedNetOwnerChangeHandler: PedNetOwnerChangeHandler,
   pedStreamInHandler: PedStreamInHandler,
   pedStreamOutHandler: PedStreamOutHandler,
@@ -82,6 +83,7 @@ export const InitXSyncPed = (
         {},
         dimension,
         streamRange,
+        migrationRange,
       )
     }
   }

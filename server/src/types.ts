@@ -19,6 +19,11 @@ export interface IXPedsSyncOptions {
    */
   streamRange?: number
 
+  /**
+   * `100` by default
+   */
+  migrationRange?: number
+
   onPedDeath?: (ped: Ped, killer: alt.Player | null) => void
 
   onPedNetOwnerChange?: (ped: Ped, newNetOwner: alt.Player | null, oldNetOwner: alt.Player | null) => void
