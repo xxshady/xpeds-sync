@@ -20,4 +20,15 @@ export interface IXPedsSyncOptions {
   streamRange?: number
 
   onPedDeath?: (ped: Ped, killer: alt.Player | null) => void
+
+  onPedNetOwnerChange?: (ped: Ped, newNetOwner: alt.Player | null, oldNetOwner: alt.Player | null) => void
+
+  onPedStreamIn?: (ped: Ped, toPlayer: alt.Player) => void
+  onPedStreamOut?: (ped: Ped, fromPlayer: alt.Player) => void
 }
+
+export type PedNetOwnerChangeHandler = Required<IXPedsSyncOptions>["onPedNetOwnerChange"]
+
+export type PedStreamInHandler = Required<IXPedsSyncOptions>["onPedStreamIn"]
+
+export type PedStreamOutHandler = Required<IXPedsSyncOptions>["onPedStreamOut"]

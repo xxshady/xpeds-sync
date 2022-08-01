@@ -27,6 +27,9 @@ export class XPedsSync {
       maxStreamedIn = 50,
       streamRange = 200,
       onPedDeath = (): void => {},
+      onPedNetOwnerChange = (): void => {},
+      onPedStreamIn = (): void => {},
+      onPedStreamOut = (): void => {},
     } = options
     this.customClientInit = customClientInit
 
@@ -37,6 +40,9 @@ export class XPedsSync {
       maxStreamedIn,
       streamRange,
       onPedDeath,
+      onPedNetOwnerChange,
+      onPedStreamIn,
+      onPedStreamOut,
     })
   }
 

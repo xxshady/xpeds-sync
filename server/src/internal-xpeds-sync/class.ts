@@ -33,6 +33,9 @@ export class InternalXPedsSync {
     maxStreamedIn,
     streamRange,
     onPedDeath,
+    onPedNetOwnerChange,
+    onPedStreamIn,
+    onPedStreamOut,
   }: Required<IXPedsSyncOptions>,
   ) {
     if (InternalXPedsSync._instance) throw new Error("xpeds sync already initialized")
@@ -48,12 +51,19 @@ export class InternalXPedsSync {
         localhost: true,
       },
       netOwnerLogic: {
-        entityNetOwnerChange: this.onEntityNetOwnerChange.bind(this),
+        // entityNetOwnerChange: this.onEntityNetOwnerChange.bind(this),
         requestUpdateEntitySyncedMeta: this.onRequestUpdateEntitySyncedMeta.bind(this),
       },
     })
 
-    this.XSyncPed = InitXSyncPed(xsync, maxStreamedIn, streamRange)
+    this.XSyncPed = InitXSyncPed(
+      xsync,
+      maxStreamedIn,
+      streamRange,
+      onPedNetOwnerChange,
+      onPedStreamIn,
+      onPedStreamOut,
+    )
     this.pedDeathHandler = onPedDeath
 
     if (!customClientInit)
@@ -78,15 +88,15 @@ export class InternalXPedsSync {
     player.emitRaw(eventName, ...args)
   }
 
-  private onEntityNetOwnerChange(
-    entity: xsync.Entity,
-    netOwner: alt.Player | null,
-    oldNetOwner: alt.Player | null,
-  ): void {
-    if (!(entity instanceof this.XSyncPed)) return
+  // private onEntityNetOwnerChange(
+  //   entity: xsync.Entity,
+  //   netOwner: alt.Player | null,
+  //   oldNetOwner: alt.Player | null,
+  // ): void {
+  //   if (!(entity instanceof this.XSyncPed)) return
 
-    this.log.log("onEntityNetOwnerChange", entity.id, oldNetOwner?.name, "->", netOwner?.name)
-  }
+  //   // this.log.log("onEntityNetOwnerChange", entity.id, oldNetOwner?.name, "->", netOwner?.name)
+  // }
 
   private onRequestUpdateEntitySyncedMeta(
     entity: xsync.Entity,
