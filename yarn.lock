@@ -1139,20 +1139,20 @@ altv-xlogger@^1.1.0:
   resolved "https://registry.yarnpkg.com/altv-xlogger/-/altv-xlogger-1.1.0.tgz#8bd8266e2108115dbd46a8941798849839ef45d0"
   integrity sha512-+TihKzxpQEVK10V1XPmHg+5YYRxGanl06MVLW3gaEyPMP0DbCMs0G88c2GYSIxuuaQupKFNol50idv6crnTzlw==
 
-altv-xsync-entity-client@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/altv-xsync-entity-client/-/altv-xsync-entity-client-3.0.0.tgz#1599c20d218ae57f2ea60e7ea4e0595014db76cb"
-  integrity sha512-mE7zumgZvtDpxJc7wVEF3RLbp9z5UpzLyYAFlhRCursrXkjmuZwkmzCBF8gHyeiJbIxatKRdNh/DxOrvHA+lhQ==
+altv-xsync-entity-client@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/altv-xsync-entity-client/-/altv-xsync-entity-client-3.2.1.tgz#ece23503ddf6a4dab5b4ea39c691a00056d414e2"
+  integrity sha512-ZhUjIV2TYqs59jA433h1nH68knSKsoENjn45VToM9Yn15S/qhm+glW6bQmm38x5cE9M0S7dWYQEDnfA48he5IA==
 
-altv-xsync-entity-server@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/altv-xsync-entity-server/-/altv-xsync-entity-server-3.2.0.tgz#d2b7caae4377d255fbe67c5826534f3cf8c992fe"
-  integrity sha512-FS2/qxAAw4d8aV6YAhDYXVKWFdc5c6if8mLJ2HOkN56eV3O5BUObZf9bJcH0Qmiz3D0qvmNWB6M/eMQCM2YLGA==
+altv-xsync-entity-server@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/altv-xsync-entity-server/-/altv-xsync-entity-server-3.2.1.tgz#53813b08496255d3d83e9549efe9ebc518f399ff"
+  integrity sha512-3r5EfZFda7fO9RLxN5fHdD2xo+UmBoV5CrfZARgEI3gnfhx2LNW61kvKTCsyplo0qH2E6bVV9RCMOlcLLSomZQ==
 
-altv-xsync-entity-shared@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/altv-xsync-entity-shared/-/altv-xsync-entity-shared-3.0.0.tgz#5c53b2fb2659721c5b2ebee928c2b85be77a497f"
-  integrity sha512-WEG4+CjGPwGKYfLI3gzjL78wE0ggyqNQpbD8kZWPrWmvYtul9PxkIMu/QeqPshL3EM6xBPzbUJCZo/DZ10Fnjg==
+altv-xsync-entity-shared@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/altv-xsync-entity-shared/-/altv-xsync-entity-shared-3.2.1.tgz#8cfff4660bd389dbfe41c1813f5300f9c6e53f1e"
+  integrity sha512-5/oEQAOBYpPRntcnlAc9iYpxV/feOQGOrXAtp1LEZUItGfX9xn0C/Qo0cI77e/rXjSGn75ipFUilcXeZIHNNzw==
 
 ansi-colors@^4.1.1:
   version "4.1.1"
