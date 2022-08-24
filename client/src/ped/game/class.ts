@@ -97,7 +97,14 @@ export class GamePed implements IPedController {
   }
 
   public get isWalking(): boolean {
-    return native.getEntitySpeed(this._scriptID) > 2.0 && !this.ragdoll
+    const vel = native.getEntityVelocity(this._scriptID)
+
+    // log.log("(vel.x + vel.y):", (Math.abs(vel.x) + Math.abs(vel.y)).toFixed(2))
+
+    return (
+      Math.abs(vel.x) + Math.abs(vel.y) > 1.5 &&
+      !this.ragdoll
+    )
   }
 
   public get heading(): number {
