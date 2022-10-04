@@ -2,25 +2,25 @@
 # yarn lockfile v1
 
 
-"@altv/types-client@^2.1.6":
-  version "2.1.6"
-  resolved "https://registry.yarnpkg.com/@altv/types-client/-/types-client-2.1.6.tgz#fe2064f8747a272ce363327e30ec4577cffdaffb"
-  integrity sha512-/n/udrjjki0ebujluWfoZVTDlTXOA3fIOvIqN4NflP6srxLfRNS3f4dUZnyszE3nTrWMnxdLJ3vZe9K2FcNMAg==
+"@altv/types-client@^2.3.7":
+  version "2.3.7"
+  resolved "https://registry.yarnpkg.com/@altv/types-client/-/types-client-2.3.7.tgz#0c07c701b131dc89553077918f2516d5019d75c6"
+  integrity sha512-WtOIN2ow+s/lfcZhysvkCWrzUBzXhBUncYhExqHa4ySxi6tVhFRNIH5FNygILvAiFeqQPH52E0oGtBJr7xsu1w==
 
-"@altv/types-natives@^1.4.4":
-  version "1.4.4"
-  resolved "https://registry.yarnpkg.com/@altv/types-natives/-/types-natives-1.4.4.tgz#d71aaf45eb5b1060dd6993ef010bdc1734294a73"
-  integrity sha512-qcIPhpRAhGnErtf3p1iVGL6CIUJWc1IdYJl6K9T5c7W8Nd9RM2cv4JIyQg3TTXLiu+1gAZlkD8KyYKIfs5BqnQ==
+"@altv/types-natives@^1.4.5":
+  version "1.4.5"
+  resolved "https://registry.yarnpkg.com/@altv/types-natives/-/types-natives-1.4.5.tgz#9580c84c8fbee0662da44e7083cd1026502912aa"
+  integrity sha512-5cy+NmZP5RzkTZbPtjz9tDR5lRMVbczwkaHDjPyJWAQm78/pKH/2gkt2/RcpC5BJ4mUkEZ5+VgJM0D2JhbjtuA==
 
-"@altv/types-server@^2.3.4":
-  version "2.3.4"
-  resolved "https://registry.yarnpkg.com/@altv/types-server/-/types-server-2.3.4.tgz#0ccfff3d049c9a24d32eadc6b74dbb8346721c6e"
-  integrity sha512-17ti97xk5qQqWsX8M+TTWn7K9BhuQe8t0ozQ2f+rpfV5aZ4T8TSgPKHiLRIxiqmKt2FAIB4C14fDKP0bOzH/Eg==
+"@altv/types-server@^2.5.0":
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/@altv/types-server/-/types-server-2.5.0.tgz#9629be97b58f1812524ea1ca078d9d763b41dd29"
+  integrity sha512-8tc3vz7+PdVHlquSKD5JZjQjFqtnbS+n93bz7xuDfQ6dEHWVIhTW1s3IugJTbMXBhJwhtuey7Vsd2ev4LGiExg==
 
-"@altv/types-shared@^1.2.3":
-  version "1.2.3"
-  resolved "https://registry.yarnpkg.com/@altv/types-shared/-/types-shared-1.2.3.tgz#1bc7fea7a55767dbfe8d7b800b18029445006d98"
-  integrity sha512-pUMrHoMDlOP64KOSCvEGtofGWrdnJNR/+t6WVrmKiFkG1YU/uTU5EklbqrlVjjopkSX1JE8yRnJDDsEzVSwomQ==
+"@altv/types-shared@^1.3.1":
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/@altv/types-shared/-/types-shared-1.3.1.tgz#1a0ce63b9d197f0b614c68dc4c21de3bf24e033b"
+  integrity sha512-6zepdoj+PoVZOHFfNaevoAIUOKIj/QdnnrhP65tteXa5Slo893jr/RLHHsJsYmJp4K4hKMNt5KazGDzDZO6dEg==
 
 "@babel/code-frame@7.12.11":
   version "7.12.11"
@@ -1139,20 +1139,20 @@ altv-xlogger@^1.1.0:
   resolved "https://registry.yarnpkg.com/altv-xlogger/-/altv-xlogger-1.1.0.tgz#8bd8266e2108115dbd46a8941798849839ef45d0"
   integrity sha512-+TihKzxpQEVK10V1XPmHg+5YYRxGanl06MVLW3gaEyPMP0DbCMs0G88c2GYSIxuuaQupKFNol50idv6crnTzlw==
 
-altv-xsync-entity-client@^3.2.1:
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/altv-xsync-entity-client/-/altv-xsync-entity-client-3.2.1.tgz#ece23503ddf6a4dab5b4ea39c691a00056d414e2"
-  integrity sha512-ZhUjIV2TYqs59jA433h1nH68knSKsoENjn45VToM9Yn15S/qhm+glW6bQmm38x5cE9M0S7dWYQEDnfA48he5IA==
+altv-xsync-entity-client@^3.2.2:
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/altv-xsync-entity-client/-/altv-xsync-entity-client-3.2.2.tgz#a0ce0f87f3c67fc3be47a3601f8ff14a3fdab918"
+  integrity sha512-qT4YhA2b1qPR5Z2JbptWGX9DFjjUtM4JDB9lEaDnQ1WZQrITfcaj4OXIRoQU34OyuGvv4knXFxauGfqbhgv04Q==
 
-altv-xsync-entity-server@^3.2.1:
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/altv-xsync-entity-server/-/altv-xsync-entity-server-3.2.1.tgz#53813b08496255d3d83e9549efe9ebc518f399ff"
-  integrity sha512-3r5EfZFda7fO9RLxN5fHdD2xo+UmBoV5CrfZARgEI3gnfhx2LNW61kvKTCsyplo0qH2E6bVV9RCMOlcLLSomZQ==
+altv-xsync-entity-server@^3.2.3:
+  version "3.2.3"
+  resolved "https://registry.yarnpkg.com/altv-xsync-entity-server/-/altv-xsync-entity-server-3.2.3.tgz#6f1cf5c5a1c135e9e876066660e97050130b354b"
+  integrity sha512-EZmhWFtTjYsusWDUSoMk7smQxgFvtTVdPvDYl4MI9loqZNP4ncxta6F/nPT5evG+n1i0i/f7PObS+nG+UYOUbQ==
 
-altv-xsync-entity-shared@^3.2.1:
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/altv-xsync-entity-shared/-/altv-xsync-entity-shared-3.2.1.tgz#8cfff4660bd389dbfe41c1813f5300f9c6e53f1e"
-  integrity sha512-5/oEQAOBYpPRntcnlAc9iYpxV/feOQGOrXAtp1LEZUItGfX9xn0C/Qo0cI77e/rXjSGn75ipFUilcXeZIHNNzw==
+altv-xsync-entity-shared@^3.2.2:
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/altv-xsync-entity-shared/-/altv-xsync-entity-shared-3.2.2.tgz#b1b14a0767cd1120b23022f87966f1896eabc708"
+  integrity sha512-O1DC1Tf0SOJLlaaaom8FiyQ4XUOgRg01mJyACVfoctS/u/aWs8mhnzSvebe0ILCQ1r2qT2BR8wyIqsN5m+9omA==
 
 ansi-colors@^4.1.1:
   version "4.1.1"
