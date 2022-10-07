@@ -252,6 +252,9 @@ export class GamePed implements IPedController {
     // red dot crosshair
     native.setPedAsEnemy(ped, true)
 
+    // same clothes / appearance on all clients
+    native.setPedDefaultComponentVariation(ped)
+
     this._scriptID = ped
   }
 
