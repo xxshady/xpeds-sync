@@ -1144,10 +1144,10 @@ altv-xsync-entity-client@^3.2.2:
   resolved "https://registry.yarnpkg.com/altv-xsync-entity-client/-/altv-xsync-entity-client-3.2.2.tgz#a0ce0f87f3c67fc3be47a3601f8ff14a3fdab918"
   integrity sha512-qT4YhA2b1qPR5Z2JbptWGX9DFjjUtM4JDB9lEaDnQ1WZQrITfcaj4OXIRoQU34OyuGvv4knXFxauGfqbhgv04Q==
 
-altv-xsync-entity-server@^3.2.3:
-  version "3.2.3"
-  resolved "https://registry.yarnpkg.com/altv-xsync-entity-server/-/altv-xsync-entity-server-3.2.3.tgz#6f1cf5c5a1c135e9e876066660e97050130b354b"
-  integrity sha512-EZmhWFtTjYsusWDUSoMk7smQxgFvtTVdPvDYl4MI9loqZNP4ncxta6F/nPT5evG+n1i0i/f7PObS+nG+UYOUbQ==
+altv-xsync-entity-server@^3.2.4:
+  version "3.2.4"
+  resolved "https://registry.yarnpkg.com/altv-xsync-entity-server/-/altv-xsync-entity-server-3.2.4.tgz#aadb41978d70885c069a0f0083bfee72cd02baea"
+  integrity sha512-rWT+0mCd2ZqIiBOdkOcz7N/xJxdpa5ZgIfMRxw/vEdnh90h4LFJMPYNelfem+UkThCLy2RTLuW9wzazz1wlQiA==
 
 altv-xsync-entity-shared@^3.2.2:
   version "3.2.2"

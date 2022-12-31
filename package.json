@@ -29,7 +29,7 @@
     "@typescript-eslint/parser": "^4.33.0",
     "altv-xlogger": "^1.1.0",
     "altv-xsync-entity-client": "^3.2.2",
-    "altv-xsync-entity-server": "^3.2.3",
+    "altv-xsync-entity-server": "^3.2.4",
     "altv-xsync-entity-shared": "^3.2.2",
     "concurrently": "^7.0.0",
     "dts-bundle-generator": "^6.9.0",
