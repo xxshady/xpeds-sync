@@ -185,7 +185,7 @@ export class GamePed implements IPedController {
       seat,
       3.0, // TEST
       1,
-      0,
+      null as unknown as string,
     )
   }
 

@@ -58,7 +58,7 @@ export class PedNametags {
       pos.x + velocityVector.x * frameTime,
       pos.y + velocityVector.y * frameTime,
       pos.z + velocityVector.z * frameTime,
-      0,
+      false,
     )
 
     for (const handler of this.handlers) {
