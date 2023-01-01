@@ -207,7 +207,7 @@ export class ObserverPed implements IPedController {
 
   private damageTickHandler(): void {
     const { currentWeapon } = this.player
-    const damageTime = native.getTimeOfLastPedWeaponDamage(this.internalPed.gamePed.scriptID, currentWeapon)
+    const damageTime = native.getTimePedDamagedByWeapon(this.internalPed.gamePed.scriptID, currentWeapon)
     const isShooting = native.isPedShooting(this.player)
 
     // TODO: check if exactly local player damaged this ped
