@@ -1,6 +1,6 @@
 {
   "name": "xpeds-sync-shared",
-  "version": "0.2.12",
+  "version": "0.2.13",
   "main": "dist/main.js",
   "types": "dist/main.d.ts",
   "files": [
