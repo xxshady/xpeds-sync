@@ -255,6 +255,14 @@ export class GamePed implements IPedController {
     // same clothes / appearance on all clients
     native.setPedDefaultComponentVariation(ped)
 
+    // improve ped pathing/routing
+    native.setPedPathClimbCostModifier(ped, 0)
+    native.setCanClimbOnEntity(ped, true)
+    native.setPedCanCowerInCover(ped, true)
+    native.setPedPathCanDropFromHeight(ped, true)
+    native.setPedPathCanUseLadders(ped, true)
+    native.setPedPathCanUseClimbovers(ped, true)
+
     this._scriptID = ped
   }
 
