@@ -20,7 +20,7 @@
     "dev": "concurrently 'yarn:dev:*'",
     "build": "concurrently 'yarn:build:*'",
     "types": "concurrently 'yarn:types:*'",
-    "publ": "yarn build && yarn types && lerna publish"
+    "publ": "yarn build && yarn types && lerna publish --force-publish"
   },
   "dependencies": {
     "@altv/types-client": "^2.4.2",
