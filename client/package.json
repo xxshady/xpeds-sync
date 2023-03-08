@@ -1,6 +1,6 @@
 {
   "name": "xpeds-sync-client",
-  "version": "0.2.16",
+  "version": "0.2.17",
   "main": "dist/main.js",
   "types": "dist/main.d.ts",
   "files": [
